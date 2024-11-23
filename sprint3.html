@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .converter-container {
+            display: flex;
+            justify-content: center;
+            gap: 70px; 
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .converter-container input,
+        .converter-container select,
+        .output-field {
+            padding: 10px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 180px; 
+            text-align: center;
+        }
+       
+        .converter-container select {
+            font-size: 15px;
+            height: 45px;;
+            width: 60px; 
+            margin-top: 20px;
+        }
+        .currency-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px; 
+            width: 140px; 
+        }
+        .currency-label {
+            font-weight: normal; 
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Конвертер валют</h1>
+    <div class="converter-container">
+        <div class="currency-block">
+            <div class="currency-label">Введите сумму</div>
+            <input type="number" id="amount" placeholder="Введите сумму">
+        </div>
+        <select id="currency">
+            <option value="KZT">KZT</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+        </select>
+        
+        <div class="currency-block">
+            <div class="currency-label">KZT (tenge)</div>
+            <div class="output-field" id="kzt-output">-</div>
+        </div>
+        <div class="currency-block">
+            <div class="currency-label">USD (dollar)</div>
+            <div class="output-field" id="usd-output">-</div>
+        </div>
+        <div class="currency-block">
+            <div class="currency-label">EUR (euro)</div>
+            <div class="output-field" id="eur-output">-</div>
+        </div>
+    </div>
+
+    <script>
+        const rates = {
+            USD: { buy: 429, sell: 431 },
+            EUR: { buy: 507, sell: 509 }
+        };
+
+        document.getElementById('amount').addEventListener('input', convert);
+        document.getElementById('currency').addEventListener('change', convert);
+
+        function convert() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const currency = document.getElementById('currency').value;
+
+            const kztOutput = document.getElementById('kzt-output');
+            const usdOutput = document.getElementById('usd-output');
+            const eurOutput = document.getElementById('eur-output');
+
+            if (isNaN(amount) || amount <= 0) {
+                kztOutput.textContent = '-';
+                usdOutput.textContent = '-';
+                eurOutput.textContent = '-';
+                return;
+            }
+
+            let kzt, usd, eur;
+
+            if (currency === 'KZT') {
+                kztOutput.textContent = amount.toFixed(2);
+                usdOutput.textContent = (amount / rates.USD.sell).toFixed(2);
+                eurOutput.textContent = (amount / rates.EUR.sell).toFixed(2);
+            } else if (currency === 'USD') {
+                kzt = amount * rates.USD.buy;
+                kztOutput.textContent = kzt.toFixed(2);
+                usdOutput.textContent = amount.toFixed(2);
+                eurOutput.textContent = (kzt / rates.EUR.sell).toFixed(2);
+            } else if (currency === 'EUR') {
+                kzt = amount * rates.EUR.buy;
+                kztOutput.textContent = kzt.toFixed(2);
+                usdOutput.textContent = (kzt / rates.USD.sell).toFixed(2);
+                eurOutput.textContent = amount.toFixed(2);
+            }
+        }
+    </script>
+</body>
+</html>
